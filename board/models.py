@@ -4,10 +4,27 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
+class Description(models.Model):
+    description = models.TextField(verbose_name=_('Description'))
+    terms = models.ManyToManyField('Term', related_name='descriptions', blank=True)
+
+    class Meta:
+        verbose_name = _('Description')
+        verbose_name_plural = _('Descriptions')
+
+    def __str__(self):
+        return self.pk
+
+    def __repr__(self):
+        return f'Description({self.pk})'
+
+
 class Task(models.Model):
 
     title = models.CharField(max_length=200, verbose_name=_('Title'))
-    description = models.TextField(verbose_name=_('Description'))
+    description = models.ForeignKey(
+        Description, models.SET_NULL, null=True, verbose_name=_('Description')
+    )
     status = models.ForeignKey(
         'Status', models.SET_NULL, null=True, related_name='tasks', verbose_name=_('Status')
     )
@@ -17,7 +34,6 @@ class Task(models.Model):
     assignee = models.ForeignKey(
         User, models.SET_NULL, null=True, related_name='assignee_tasks', verbose_name=_('Assignee')
     )
-    terms = models.ManyToManyField('Term', related_name='tasks', blank=True)
 
     class Meta:
         verbose_name = _('Task')
@@ -48,8 +64,9 @@ class Term(models.Model):
 
     name = models.CharField(max_length=100, verbose_name=_('Name'))
 
-    description = models.TextField(verbose_name=_('Description'))
-    explanatory_terms = models.ManyToManyField('Term', related_name='explicable_terms', blank=True)
+    description = models.ForeignKey(
+        Description, models.SET_NULL, null=True, verbose_name=_('Description')
+    )
 
     class Meta:
         verbose_name = _('Term')

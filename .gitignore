@@ -3,7 +3,9 @@ venv/
 __pycache__/
 
 .env/.dev
-
 db.sqlite3
+celerybeat-schedule
+
+migrations/
 
 *.mo

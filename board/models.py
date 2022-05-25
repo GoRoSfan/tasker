@@ -13,7 +13,7 @@ class Description(models.Model):
         verbose_name_plural = _('Descriptions')
 
     def __str__(self):
-        return self.pk
+        return self.description[:40]
 
     def __repr__(self):
         return f'Description({self.pk})'

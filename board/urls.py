@@ -3,8 +3,9 @@ from rest_framework import routers
 from board import views
 
 router = routers.DefaultRouter()
-router.register(r'tasks', views.TaskViewSet)
-router.register(r'terms', views.TermViewSet)
+router.register(r'task', views.TaskViewSet)
+router.register(r'term', views.TermViewSet)
+router.register(r'status', views.StatusViewSet)
 
 
 urlpatterns = [

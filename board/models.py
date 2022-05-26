@@ -65,7 +65,7 @@ class Term(models.Model):
     name = models.CharField(max_length=100, verbose_name=_('Name'))
 
     description = models.ForeignKey(
-        Description, models.SET_NULL, null=True, verbose_name=_('Description')
+        Description, models.SET_NULL, null=True, verbose_name=_('Description'), related_name='term_description'
     )
 
     class Meta:

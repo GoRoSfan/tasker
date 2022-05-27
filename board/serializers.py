@@ -21,7 +21,7 @@ class DescriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Description
-        fields = ('description', 'terms')
+        fields = ('text', 'terms')
 
 
 class TaskSerializer(serializers.ModelSerializer):

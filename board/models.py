@@ -2,18 +2,30 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
+from board.tasks import update_terms_list
+
 
 # Create your models here.
 class Description(models.Model):
-    description = models.TextField(verbose_name=_('Description'))
+    text = models.TextField(verbose_name=_('Text'))
     terms = models.ManyToManyField('Term', related_name='descriptions', blank=True)
 
     class Meta:
         verbose_name = _('Description')
         verbose_name_plural = _('Descriptions')
 
+    def save(self, *args, **kwargs):
+        try:
+            old_instance = Description.objects.get(pk=self.pk)
+        except Description.DoesNotExist:
+            old_instance = None
+        super(Description, self).save(*args, **kwargs)
+
+        if old_instance is None or old_instance.text != self.text:
+            update_terms_list.delay(self.pk)
+
     def __str__(self):
-        return self.description[:40]
+        return self.text[:40]
 
     def __repr__(self):
         return f'Description({self.pk})'
@@ -62,7 +74,7 @@ class Status(models.Model):
 
 class Term(models.Model):
 
-    name = models.CharField(max_length=100, verbose_name=_('Name'))
+    name = models.CharField(max_length=100, verbose_name=_('Name'), unique=True)
 
     description = models.ForeignKey(
         Description, models.SET_NULL, null=True, verbose_name=_('Description'), related_name='term_description'

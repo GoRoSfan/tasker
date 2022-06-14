@@ -7,7 +7,7 @@ def update_terms_list(description_pk):
     description = Description.objects.get(pk=description_pk)
     terms = Term.objects.values('id', 'name').all()
 
-    description.terms.set([term['id'] for term in terms if term['name'] in description.text])
+    description.terms.set([term['id'] for term in terms if term['name'].lower() in description.text.lower()])
 
     description.save()
 
